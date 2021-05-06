@@ -48,7 +48,7 @@ namespace NerdStore.Core.DomainObjects
             }
         }
 
-        public static void ValidarSeVazio(string valor, string mensagem)
+        public static void ValidarSePreenchido(string valor, string mensagem)
         {
             if(valor == null || valor.Trim().Length == 0)
             {
