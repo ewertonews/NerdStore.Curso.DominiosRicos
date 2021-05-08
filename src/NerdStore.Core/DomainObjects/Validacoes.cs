@@ -20,7 +20,7 @@ namespace NerdStore.Core.DomainObjects
             }
         }
 
-        public static void ValidarCaracteres(string valor, int maximo, string mensagem)
+        public static void ValidarQuantidadeCaracteres(string valor, int maximo, string mensagem)
         {
             var length = valor.Trim().Length;
             if (length > maximo)
@@ -29,7 +29,7 @@ namespace NerdStore.Core.DomainObjects
             }
         }
 
-        public static void ValidarCaracteres(string valor, int minimo, int maximo, string mensagem)
+        public static void ValidarQuantidadeCaracteres(string valor, int minimo, int maximo, string mensagem)
         {
             var length = valor.Trim().Length;
             if (length < minimo || length > maximo)
@@ -56,7 +56,7 @@ namespace NerdStore.Core.DomainObjects
             }
         }
 
-        public static void ValidarSeNullo(object object1, string mensagem)
+        public static void ValidarSeNaoNulo(object object1, string mensagem)
         {
             if(object1 == null)
             {

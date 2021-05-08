@@ -77,7 +77,7 @@ namespace NerdStore.Catalogo.Domain
             Validacoes.ValidarSePreenchido(Descricao, "O campo Descrição do produto não pode estar vazio");
             Validacoes.ValidarSePreenchido(Imagem, "O campo Imagem do produto não pode estar vazio");
             Validacoes.ValidarSeDiferente(CategoriaId, Guid.Empty, "O campo CategoriaId do produto não pode estar vazio");
-            Validacoes.ValidarSeMaiorIgualMinimo(Valor, 1, "O campo Valor do produto não pode ser menor ou igual a 0");
+            Validacoes.ValidarSeMaiorIgualMinimo(Valor, 1, "O campo Valor do produto não pode ser menor que 1");
         }   
     }
 }
