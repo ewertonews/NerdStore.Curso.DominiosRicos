@@ -28,11 +28,33 @@ namespace NerdStore.Catalogo.Data
             {
                 propriedade.SetColumnType("varchar(100)");
             }
+
+            //aplica no contexto todas as configuracoes definidas para as entidades
+            //pega as entidades que implementam IEntityTypeConfiguration
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(CatalogoContext).Assembly);
         }
 
-        public Task<bool> Commit()
+        public async Task<bool> Commit()
         {
-            throw new NotImplementedException();
+            //pega do ChangeTracker do EF todas a propridades com nome 'DataCadastro'
+            var entidadesComPropridadeDataCadastro = ChangeTracker.Entries()
+                .Where(entry => entry.Entity.GetType().GetProperty("DataCadastro") != null);
+
+            foreach (var entidade in entidadesComPropridadeDataCadastro)
+            {
+                //seta a propridade DataCastro daquela entidade para agora
+                if (entidade.State == EntityState.Added)
+                {
+                    entidade.Property("DataCadastro").CurrentValue = DateTime.Now;
+                }
+
+                if (entidade.State == EntityState.Modified)
+                {
+                    entidade.Property("DataCadastro").IsModified = false;
+                }
+            }
+
+            return await base.SaveChangesAsync() > 0;
         }
     }
 }
