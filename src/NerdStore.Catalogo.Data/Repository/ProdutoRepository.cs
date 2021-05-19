@@ -18,7 +18,7 @@ namespace NerdStore.Catalogo.Data.Repository
             _context = context;
         }
 
-        //https://medium.com/@martinstm/unit-of-work-net-core-652f9b6cf894
+        //https://www.youtube.com/watch?v=HdsRpSK4PUg
         public IUnitOfWork UnitOfWork => _context;
         
         public async Task<IEnumerable<Categoria>> ObterCategorias()

@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 using NerdStore.Catalogo.Application.Models;
 using NerdStore.Catalogo.Domain;
+using NerdStore.Core.DomainObjects;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace NerdStore.Catalogo.Application.Services
@@ -12,12 +11,17 @@ namespace NerdStore.Catalogo.Application.Services
     public class ProdutoAppService : IProdutoAppService
     {
         private readonly IProdutoRepository _produtoRepository;
+        private readonly IEstoqueService _estoqueService;
         private readonly IMapper _mapper;
 
-        public ProdutoAppService(IProdutoRepository produtoRepository, IMapper mapper)
+        public ProdutoAppService(
+            IProdutoRepository produtoRepository,
+            IMapper mapper,
+            IEstoqueService estoqueService)
         {
             _produtoRepository = produtoRepository;
             _mapper = mapper;
+            _estoqueService = estoqueService;
         }
 
         public async Task AdicionarProduto(ProdutoViewModel produtoViewModel)
@@ -28,44 +32,64 @@ namespace NerdStore.Catalogo.Application.Services
             await _produtoRepository.UnitOfWork.Commit();
         }
 
-        public Task AtualizarProduto(ProdutoViewModel produtoViewModel)
+        public async Task AtualizarProduto(ProdutoViewModel produtoViewModel)
         {
-            throw new NotImplementedException();
+            var produto = _mapper.Map<Produto>(produtoViewModel);
+            _produtoRepository.Atualizar(produto);
+
+            await _produtoRepository.UnitOfWork.Commit();
         }
 
-        public Task<ProdutoViewModel> DebitarEstoque(Guid id, int quantidade)
+        public async Task<IEnumerable<CategoriaViewModel>> ObterCategorias()
         {
-            throw new NotImplementedException();
-        }        
-
-        public Task<IEnumerable<CategoriaViewModel>> ObterCategorias()
-        {
-            throw new NotImplementedException();
+            var categorias = await _produtoRepository.ObterCategorias();
+            return _mapper.Map<IEnumerable<CategoriaViewModel>>(categorias);
         }
 
-        public Task<IEnumerable<ProdutoViewModel>> ObterPorCategoria(int codigo)
+        public async Task<IEnumerable<ProdutoViewModel>> ObterPorCategoria(int codigo)
         {
-            throw new NotImplementedException();
+            var produtoDaCategoria = await _produtoRepository.ObterPorCategoria(codigo);
+            return _mapper.Map<IEnumerable<ProdutoViewModel>>(produtoDaCategoria);
         }
 
-        public Task<ProdutoViewModel> ObterPorId(Guid id)
+        public async Task<ProdutoViewModel> ObterPorId(Guid id)
         {
-            throw new NotImplementedException();
+            var produtoQueTemId = await _produtoRepository.ObterPorId(id);
+            return _mapper.Map<ProdutoViewModel>(produtoQueTemId);
         }
 
-        public Task<IEnumerable<ProdutoViewModel>> ObterTodos()
+        public async Task<IEnumerable<ProdutoViewModel>> ObterTodos()
         {
-            throw new NotImplementedException();
+            var produtos = await _produtoRepository.ObterTodos();
+            return _mapper.Map<IEnumerable<ProdutoViewModel>>(produtos);
         }
 
-        public Task<ProdutoViewModel> ReporEstoque(Guid id, int quantidade)
+        public async Task<ProdutoViewModel> DebitarEstoque(Guid id, int quantidade)
         {
-            throw new NotImplementedException();
+            var debitouDoEstoque = await _estoqueService.DebitarEstoque(id, quantidade);
+            if (!debitouDoEstoque)
+            {
+                throw new DomainException("Falha ao debitar estoque");
+            }
+
+            var produtoComEstoqueAtualizado = await _produtoRepository.ObterPorId(id);
+            return _mapper.Map<ProdutoViewModel>(produtoComEstoqueAtualizado);
+        }
+
+        public async Task<ProdutoViewModel> ReporEstoque(Guid id, int quantidade)
+        {
+            var reposEstoque = await _estoqueService.ReporEstoque(id, quantidade);
+            if (!reposEstoque)
+            {
+                throw new DomainException("Falha ao repor estoque");
+            }
+            var produtoComEstoqueAtualizado = await _produtoRepository.ObterPorId(id);
+            return _mapper.Map<ProdutoViewModel>(produtoComEstoqueAtualizado);
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            _produtoRepository?.Dispose();
         }
     }
 }
