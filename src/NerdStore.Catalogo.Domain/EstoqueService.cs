@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using NerdStore.Catalogo.Domain.Events;
+using NerdStore.Core.Bus;
+using System;
 using System.Threading.Tasks;
 
 namespace NerdStore.Catalogo.Domain
 {
     //Serviço de domínio: ele é cross aggregate
+    //Deve conter ações/regras do negócio e as ações precisam ser da linguagem ubíqua
     public class EstoqueService : IEstoqueService, IDisposable
     {
         private readonly IProdutoRepository _produtoRepository;
+        private readonly IMediatrHandler _bus;
 
         public EstoqueService(IProdutoRepository produtoRepository)
         {
@@ -32,8 +33,17 @@ namespace NerdStore.Catalogo.Domain
 
             produto.DebitarEstoque(quantidade);
 
+            //TODO: Parametrizar a quantidade de estoque baixo
+            if (produto.QuantidadeEstoque < 10)
+            {
+                //avisar, mandar email, abrir chamado, realizar nova compra, etc.
+                //Essa manipução é feita dentro da classe ProdutoEventHandler
+                await _bus.PublicarEvento(new ProdutoAbaixoEstoqueEvent(produto.Id, produto.QuantidadeEstoque));
+                //TODO: aqui esse new infringe o Single Responsibility Principle? (acho que sim)
+            }
+
             return await AtualizarProduto(produto);
-        }               
+        }
 
         public async Task<bool> ReporEstoque(Guid produtoId, int quantidade)
         {
