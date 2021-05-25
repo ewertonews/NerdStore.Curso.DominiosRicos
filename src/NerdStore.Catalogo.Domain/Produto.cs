@@ -17,6 +17,10 @@ namespace NerdStore.Catalogo.Domain
         //Aqui o objeto de valor Dimensoes está agregando valor ao Produto
         public Dimensoes Dimensoes { get; private set; }
 
+        protected Produto()
+        {
+        }
+
         public Produto(
             string nome,
             string descricao,
