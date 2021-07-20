@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace NerdStore.Catalogo.Application.Models
+namespace NerdStore.Catalogo.Application.ViewModels
 {
     public class CategoriaViewModel
     {

@@ -1,4 +1,4 @@
-﻿using NerdStore.Catalogo.Application.Models;
+﻿using NerdStore.Catalogo.Application.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

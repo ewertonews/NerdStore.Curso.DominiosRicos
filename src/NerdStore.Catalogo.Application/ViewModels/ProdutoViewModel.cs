@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NerdStore.Catalogo.Application.Models
+namespace NerdStore.Catalogo.Application.ViewModels
 {
     public class ProdutoViewModel
     {
