@@ -40,14 +40,20 @@ namespace NerdStore.Vendas.Domain
             return Quantidade * ValorUnitario;
         }
 
-        internal void AumentarEstoque(int unidades)
+        internal void AdicionarUnidades(int unidades)
         {
             Quantidade += unidades;
         }
 
-        internal void AtualizarQuantidadeEstoque(int quantidade)
+        internal void AtualizarUnidades(int unidades)
         {
-            Quantidade = quantidade;
+            Quantidade = unidades;
+        }
+
+        public override bool EhValido()
+        {
+            //TODO:fazer validação depois
+            return true;
         }
     }
 }
